@@ -1,0 +1,139 @@
+module org.royaldev.chester.irc.IRC;
+
+import std.stdio: writeln;
+import std.socket: Socket, SocketException, SocketType, AddressFamily, InternetAddress;
+import std.array: replace;
+import std.algorithm: equal, startsWith;
+import std.conv: to;
+import std.regex: regex, Regex, match;
+import std.string: isNumeric;
+import std.c.stdlib: exit;
+
+import org.royaldev.chester.irc.LineType;
+import org.royaldev.chester.irc.EventType;
+import org.royaldev.chester.irc.listeners.Listener;
+
+public class IRC {
+    private Socket s;
+    private string nick;
+    private Regex!char lineRegex = regex(r"^(:(?P<prefix>\S+) )?(?P<command>\S+)( (?!:)(?P<params>.+?))?( :(?P<trail>.+))?$", "g");
+    private bool connected = false;
+    
+    private Listener[string] listeners;
+    
+    public this(string server, short port) {
+        try {
+            s = new Socket(AddressFamily.INET, SocketType.STREAM);
+            s.connect(new InternetAddress(server, port));
+        } catch (SocketException s) {
+            writeln("Couldn't connect!");
+            exit(-1);
+        }
+    }
+    
+    /**
+    * Returns if the connection is still live.
+    */
+    public bool isAlive() {
+        return s.isAlive();
+    }
+    
+    /**
+    * Returns if the bot is actually connected and communicating with the server. This
+    * changes to true when the end of MOTD or error message for no MOTD is received,
+    * according to RFC standards. 
+    */
+    public bool isConnected() {
+        return connected;
+    }
+    
+    public string getNick() {
+        return nick;
+    }
+    
+    /**
+    * Sends a message to the target.
+    */
+    public void sendMessage(string target, string message) {
+        if (!isAlive()) return;
+        sendRaw("PRIVMSG " ~ target ~ " :" ~ message);
+    }
+    
+    /**
+    * Sends a raw IRC line to the server. Do not include the linebreak in your line.
+    */
+    public void sendRaw(string ircLine) {
+        if (!isAlive()) return;
+        s.send(ircLine ~ "\r\n");
+    }
+    
+    /**
+    * This can only be done once on most IRC servers. This sets the default connection
+    * information when connecting. This should be called immediately after construction.
+    */
+    public void setCredentials(string nick, string realname, string user) {
+        if (!isAlive()) return;
+        this.nick = nick;
+        sendRaw("USER " ~ user ~ " 8 * :" ~ realname);
+        sendRaw("NICK " ~ nick);
+    }
+    
+    public void joinChannel(string channel) {
+        sendRaw("JOIN " ~ channel); 
+    }
+    
+    /**
+    * Blockingly reads a line. This will block until it receives "\r\n"
+    */
+    public string readLine() {
+        string line = "";
+        with (s) {
+            while (isAlive()) {
+                char[1] buff;
+                auto amt = receive(buff);
+                line ~= to!string(buff[0..amt]);
+                if (line.length > 2 && line[$-2..$].equal("\r\n")) return line;
+            }
+        }
+        return line;
+      }
+    
+    /**
+    * Starts the bot. This is blocking until the bot is finished, so using this in a thread
+    * is advised.
+    */
+    public void startBot() {
+        while (isAlive()) {
+            auto line = readLine().replace("\r\n", "");
+            writeln(line);
+            if (line.startsWith("PING ")) sendRaw("PONG " ~ line[5..$]);
+            auto match = line.match(lineRegex);
+            if (!match) continue;
+            auto captures = match.captures;
+            string command = captures["command"];
+            if (command.isNumeric()) {
+                int code = to!int(command);
+                if (code == LineType.RplMotdEnd || code == LineType.ErrNoMotd) connected = true;
+                foreach(listener; listeners.byValue()) if (listener.getLineType() == code) listener.run(captures);
+            } else {
+                if (command.equal("PRIVMSG")) {
+                    string params = captures["params"];
+                    if (params.startsWith("#")) { // channel message
+                        foreach(listener; listeners.byValue()) if (listener.getEventType() == EventType.ChannelMessage) listener.run(captures);
+                    } else if (params.equal(getNick())) { // private message
+                        foreach(listener; listeners.byValue()) if (listener.getEventType() == EventType.PrivateMessage) listener.run(captures);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void addListener(string name, Listener listener) {
+        if (name !in listeners) listeners[name] = listener;
+    }
+    
+    public void removeListener(string name) {
+        if (name in listeners) listeners.remove(name);
+    }
+    
+}

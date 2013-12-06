@@ -1,0 +1,11 @@
+-od"bin"
+-of"bin/Chester"
+
+-I"src"
+
+"src/org/royaldev/chester/Chester.d"
+"src/org/royaldev/chester/irc/EventType.d"
+"src/org/royaldev/chester/irc/IRC.d"
+"src/org/royaldev/chester/irc/LineType.d"
+"src/org/royaldev/chester/irc/listeners/Listener.d"
+
