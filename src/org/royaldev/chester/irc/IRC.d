@@ -103,6 +103,14 @@ public class IRC {
         return line;
       }
 
+    private void runListeners(EventType et, Captures!(string, ulong) captures) {
+        foreach(listener; listeners.byValue()) if (listener.getEventType() == et) listener.run(captures);
+    }
+
+    private void runListeners(LineType lt, Captures!(string, ulong) captures) {
+        foreach(listener; listeners.byValue()) if (listener.getLineType() == lt) listener.run(captures);
+    }
+
     /**
     * Starts the bot. This is blocking until the bot is finished, so using this in a thread
     * is advised.
@@ -125,10 +133,12 @@ public class IRC {
                     string params = captures["params"];
                     string message = captures["trail"];
                     if (params.startsWith("#") && !message.startsWith("\x01ACTION")) { // channel message, not action
-                        foreach(listener; listeners.byValue()) if (listener.getEventType() == EventType.ChannelMessage) listener.run(captures);
+                        runListeners(EventType.ChannelMessage, captures);
                     } else if (params.equal(getNick())) { // private message
-                        foreach(listener; listeners.byValue()) if (listener.getEventType() == EventType.PrivateMessage) listener.run(captures);
+                        runListeners(EventType.PrivateMessage, captures);
                     }
+                } else if (command.equal("INVITE")) {
+                    runListeners(EventType.Invite, captures);
                 }
             }
         }

@@ -115,6 +115,17 @@ public class Chester {
             }
         }
     });
+    irc.addListener("invited", new class Listener {
+        override LineType getLineType() {
+            return LineType.RplNone;;
+        }
+        override EventType getEventType() {
+            return EventType.Invite;
+        }
+        override public void run(Captures!(string, ulong) captures) {
+            irc.joinChannel(captures["trail"]);
+        }
+    });
   }
 
   private void write(string sentence) {
