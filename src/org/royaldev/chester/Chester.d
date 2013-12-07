@@ -24,7 +24,7 @@ import org.royaldev.chester.irc.EventType;
 
 private void main(string[] args) {
   if (args.length < 4) {
-    writeln("Usage: " ~ args[0] ~ " nickname server channel");
+    writeln("Usage: " ~ args[0] ~ " nickname server(:port)(:pass) channel (nickserv pass)");
     return;
   }
   new Chester(args[1..$]);
@@ -37,7 +37,7 @@ public class Chester {
             this.irc = irc;
             super(&run);
         }
-        
+
         private : void run() {
             irc.startBot();
         }
@@ -56,7 +56,7 @@ public class Chester {
     string nick = args[0];
     string serv = args[1];
     string chan = args[2];
-    irc = new IRC(serv, 6667);
+    irc = new IRC(serv);
     irc.setCredentials(nick, "Chester", nick);
     auto botThread = new IRCLauncher(irc);
     botThread.start();

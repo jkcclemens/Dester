@@ -2,11 +2,11 @@ module org.royaldev.chester.irc.IRC;
 
 import std.stdio: writeln;
 import std.socket: Socket, SocketException, SocketType, AddressFamily, InternetAddress;
-import std.array: replace;
+import std.array: replace, join;
 import std.algorithm: equal, startsWith;
 import std.conv: to;
 import std.regex: regex, Regex, match;
-import std.string: isNumeric;
+import std.string: isNumeric, split;
 import std.c.stdlib: exit;
 
 import org.royaldev.chester.irc.LineType;
@@ -21,7 +21,11 @@ public class IRC {
 
     private Listener[string] listeners;
 
-    public this(string server, short port) {
+    public this(string server) {
+        auto parts = server.split(":");
+        server = parts[0];
+        short port = parts.length > 1 ? to!short(parts[1]) : 6667;
+        string pass = parts.length > 2 ? parts[2..$].join(":") : "";
         try {
             s = new Socket(AddressFamily.INET, SocketType.STREAM);
             s.connect(new InternetAddress(server, port));
@@ -29,6 +33,7 @@ public class IRC {
             writeln("Couldn't connect!");
             exit(-1);
         }
+        if (!pass.equal("")) sendRaw("PASS " ~ pass);
     }
 
     /**
