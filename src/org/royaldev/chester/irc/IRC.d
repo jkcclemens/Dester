@@ -18,9 +18,9 @@ public class IRC {
     private string nick;
     private Regex!char lineRegex = regex(r"^(:(?P<prefix>\S+) )?(?P<command>\S+)( (?!:)(?P<params>.+?))?( :(?P<trail>.+))?$", "g");
     private bool connected = false;
-    
+
     private Listener[string] listeners;
-    
+
     public this(string server, short port) {
         try {
             s = new Socket(AddressFamily.INET, SocketType.STREAM);
@@ -30,27 +30,27 @@ public class IRC {
             exit(-1);
         }
     }
-    
+
     /**
     * Returns if the connection is still live.
     */
     public bool isAlive() {
         return s.isAlive();
     }
-    
+
     /**
     * Returns if the bot is actually connected and communicating with the server. This
     * changes to true when the end of MOTD or error message for no MOTD is received,
-    * according to RFC standards. 
+    * according to RFC standards.
     */
     public bool isConnected() {
         return connected;
     }
-    
+
     public string getNick() {
         return nick;
     }
-    
+
     /**
     * Sends a message to the target.
     */
@@ -58,7 +58,7 @@ public class IRC {
         if (!isAlive()) return;
         sendRaw("PRIVMSG " ~ target ~ " :" ~ message);
     }
-    
+
     /**
     * Sends a raw IRC line to the server. Do not include the linebreak in your line.
     */
@@ -66,7 +66,7 @@ public class IRC {
         if (!isAlive()) return;
         s.send(ircLine ~ "\r\n");
     }
-    
+
     /**
     * This can only be done once on most IRC servers. This sets the default connection
     * information when connecting. This should be called immediately after construction.
@@ -77,11 +77,11 @@ public class IRC {
         sendRaw("USER " ~ user ~ " 8 * :" ~ realname);
         sendRaw("NICK " ~ nick);
     }
-    
+
     public void joinChannel(string channel) {
-        sendRaw("JOIN " ~ channel); 
+        sendRaw("JOIN " ~ channel);
     }
-    
+
     /**
     * Blockingly reads a line. This will block until it receives "\r\n"
     */
@@ -97,7 +97,7 @@ public class IRC {
         }
         return line;
       }
-    
+
     /**
     * Starts the bot. This is blocking until the bot is finished, so using this in a thread
     * is advised.
@@ -118,7 +118,8 @@ public class IRC {
             } else {
                 if (command.equal("PRIVMSG")) {
                     string params = captures["params"];
-                    if (params.startsWith("#")) { // channel message
+                    string message = captures["trail"];
+                    if (params.startsWith("#") && !message.startsWith("\x01ACTION")) { // channel message, not action
                         foreach(listener; listeners.byValue()) if (listener.getEventType() == EventType.ChannelMessage) listener.run(captures);
                     } else if (params.equal(getNick())) { // private message
                         foreach(listener; listeners.byValue()) if (listener.getEventType() == EventType.PrivateMessage) listener.run(captures);
@@ -127,13 +128,13 @@ public class IRC {
             }
         }
     }
-    
+
     public void addListener(string name, Listener listener) {
         if (name !in listeners) listeners[name] = listener;
     }
-    
+
     public void removeListener(string name) {
         if (name in listeners) listeners.remove(name);
     }
-    
+
 }
