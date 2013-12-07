@@ -91,11 +91,27 @@ public class Chester {
                 irc.sendMessage(channel, randMessage);
             } else if (message.toLower().startsWith("!hi")) {
                 irc.sendMessage(channel, "Hi!");
-            } else if (message.startsWith("!join")) {
-                if (margs.length > 0) irc.joinChannel(margs[0]);
+            } else if (message.toLower().startsWith("!join") && margs.length > 0) {
+                irc.joinChannel(margs[0]);
             } else {
                 write(message);
                 storage ~= message;
+            }
+        }
+    });
+    irc.addListener("privmsgcommands", new class Listener {
+        override LineType getLineType() {
+            return LineType.RplNone;;
+        }
+        override EventType getEventType() {
+            return EventType.PrivateMessage;
+        }
+        override public void run(Captures!(string, ulong) captures) {
+            string message = captures["trail"];
+            string[] margs = message.split(" ")[1..$];
+            string channel = captures["params"];
+            if (message.toLower().startsWith("join") && margs.length > 0)  {
+                irc.joinChannel(margs[0]);
             }
         }
     });
