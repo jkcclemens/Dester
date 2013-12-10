@@ -1,17 +1,18 @@
 module org.royaldev.chester.irc.IRC;
 
-import std.stdio: writeln;
-import std.socket: Socket, SocketException, SocketType, AddressFamily, InternetAddress;
-import std.array: replace, join;
+import org.royaldev.chester.irc.EventType;
+import org.royaldev.chester.irc.LineType;
+import org.royaldev.chester.irc.listeners.Listener;
+
 import std.algorithm: equal, startsWith;
+import std.array: replace, join;
+import std.c.stdlib: exit;
 import std.conv: to;
 import std.regex: regex, Regex, match;
+import std.socket: Socket, SocketException, SocketType, AddressFamily, InternetAddress;
+import std.stdio: writeln;
 import std.string: isNumeric, split;
-import std.c.stdlib: exit;
-
-import org.royaldev.chester.irc.LineType;
-import org.royaldev.chester.irc.EventType;
-import org.royaldev.chester.irc.listeners.Listener;
+import std.utf: toUTF8;
 
 public class IRC {
     private Socket s;

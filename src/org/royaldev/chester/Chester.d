@@ -7,20 +7,20 @@
 */
 module org.royaldev.chester.Chester;
 
-import std.stdio: writeln, File;
-import std.regex: rreplace = replace;
-import std.array: strip, split, join;
-import std.algorithm: startsWith, canFind;
-import std.string: toLower;
-import std.random: randomSample;
-import std.math: floor;
-
 import core.thread: Thread;
 
-import org.royaldev.chester.irc.IRC;
-import org.royaldev.chester.irc.listeners.Listener;
-import org.royaldev.chester.irc.LineType;
 import org.royaldev.chester.irc.EventType;
+import org.royaldev.chester.irc.IRC;
+import org.royaldev.chester.irc.LineType;
+import org.royaldev.chester.irc.listeners.Listener;
+
+import std.algorithm: startsWith, canFind;
+import std.array: strip, split, join;
+import std.math: floor;
+import std.random: randomSample;
+import std.regex: rreplace = replace;
+import std.stdio: writeln, File;
+import std.string: toLower;
 
 private void main(string[] args) {
   if (args.length < 4) {
