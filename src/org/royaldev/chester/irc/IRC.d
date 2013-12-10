@@ -118,7 +118,7 @@ public class IRC {
     */
     public void startBot() {
         while (isAlive()) {
-            auto line = readLine().replace("\r\n", "");
+            auto line = toUTF8(readLine().replace("\r\n", ""));
             writeln(line);
             if (line.startsWith("PING ")) sendRaw("PONG " ~ line[5..$]);
             auto match = line.match(lineRegex);
