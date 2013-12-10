@@ -1,9 +1,7 @@
 /**
-* Chester 2.0 written in D  by jkcclemens (jkc.clemens@gmail.com)
-* Version: 2.0-9
-* Original Chester by Hawkfalcon
+* Chester 2.0. Written in D by jkcclemens (jkc.clemens@gmail.com).
+* Original Chester by hawkfalcon.
 * This should compile with dmd and gdc.
-* On Debian 7 x86_64, compiled with gdc and stripped, the executable comes out to 728,144 bytes.
 */
 module org.royaldev.chester.Chester;
 
@@ -61,10 +59,10 @@ public class Chester {
     auto botThread = new IRCLauncher(irc);
     botThread.start();
     irc.addListener("welcome", new class Listener {
-        override LineType getLineType() {
+        override public LineType getLineType() {
             return LineType.RplWelcome;
         }
-        override EventType getEventType() {
+        override public EventType getEventType() {
             return EventType.None;
         }
         override public void run(Captures!(string, ulong) captures) {
@@ -75,10 +73,10 @@ public class Chester {
         }
     });
     irc.addListener("mention", new class Listener {
-        override LineType getLineType() {
+        override public LineType getLineType() {
             return LineType.RplNone;;
         }
-        override EventType getEventType() {
+        override public EventType getEventType() {
             return EventType.ChannelMessage;
         }
         override public void run(Captures!(string, ulong) captures) {
@@ -100,10 +98,10 @@ public class Chester {
         }
     });
     irc.addListener("privmsgcommands", new class Listener {
-        override LineType getLineType() {
+        override public LineType getLineType() {
             return LineType.RplNone;;
         }
-        override EventType getEventType() {
+        override public EventType getEventType() {
             return EventType.PrivateMessage;
         }
         override public void run(Captures!(string, ulong) captures) {
@@ -116,10 +114,10 @@ public class Chester {
         }
     });
     irc.addListener("invited", new class Listener {
-        override LineType getLineType() {
+        override public LineType getLineType() {
             return LineType.RplNone;;
         }
-        override EventType getEventType() {
+        override public EventType getEventType() {
             return EventType.Invite;
         }
         override public void run(Captures!(string, ulong) captures) {
