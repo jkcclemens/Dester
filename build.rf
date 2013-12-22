@@ -1,11 +1,11 @@
 -od"bin"
--of"bin/Chester"
+-of"bin/Dester"
 
 -I"src"
 
-"src/org/royaldev/chester/Chester.d"
-"src/org/royaldev/chester/irc/EventType.d"
-"src/org/royaldev/chester/irc/IRC.d"
-"src/org/royaldev/chester/irc/LineType.d"
-"src/org/royaldev/chester/irc/listeners/Listener.d"
+"src/org/royaldev/dester/Dester.d"
+"src/org/royaldev/dester/irc/EventType.d"
+"src/org/royaldev/dester/irc/IRC.d"
+"src/org/royaldev/dester/irc/LineType.d"
+"src/org/royaldev/dester/irc/listeners/Listener.d"
 
