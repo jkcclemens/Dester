@@ -12,7 +12,7 @@ import std.regex: regex, Regex, match;
 import std.socket: Socket, SocketException, SocketType, AddressFamily, InternetAddress;
 import std.stdio: writeln;
 import std.string: isNumeric, split;
-import std.utf: toUTF8;
+import std.utf: UTFException, toUTF8;
 
 public class IRC {
 	private Socket s;
@@ -118,7 +118,12 @@ public class IRC {
 	 */
 	public void startBot() {
 		while (isAlive()) {
-			auto line = toUTF8(readLine().replace("\r\n", ""));
+			string line;
+			try {
+				line = toUTF8(readLine().replace("\r\n", ""));
+			} catch (UTFException ex) {
+				continue;
+			}
 			writeln(line);
 			if (line.startsWith("PING ")) sendRaw("PONG " ~ line[5..$]);
 			auto match = line.match(lineRegex);
