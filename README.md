@@ -1,5 +1,5 @@
-Dhester
-============
+Dester
+======
 
 This is a fork of hawkfalcon's Chester! It's written entirely in D, which means that you can compile it straight to
 machine code, instead of running it on a JVM.
@@ -22,4 +22,3 @@ strip -s bin/Dester
 In a bash shell, that will compile Dester.
 
 *Note*: GDC will not compile unless you compile GDC and GCC together from their latest (git) sources.
-
