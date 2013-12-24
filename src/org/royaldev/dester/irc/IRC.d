@@ -88,6 +88,10 @@ public class IRC {
 		sendRaw("JOIN " ~ channel);
 	}
 
+    public void partChannel(string channel) {
+        sendRaw("PART " ~ channel);
+    }
+
 	/**
 	 * Blockingly reads a line. This will block until it receives "\r\n"
 	 */

@@ -86,6 +86,8 @@ public class Dester {
                 irc.sendMessage(channel, "Hi!");
             } else if (message.toLower().startsWith("!join") && margs.length > 0) {
                 irc.joinChannel(margs[0]);
+            } else if (message.toLower().startsWith("!part") && margs.length > 0) {
+                irc.partChannel(margs[0]);
             } else {
                 write(message);
                 storage ~= message;
@@ -105,6 +107,8 @@ public class Dester {
             string channel = captures["params"];
             if (message.toLower().startsWith("join") && margs.length > 0)  {
                 irc.joinChannel(margs[0]);
+            } else if (message.toLower().startsWith("!part") && margs.length > 0) {
+                irc.partChannel(margs[0]);
             }
         }
     });
