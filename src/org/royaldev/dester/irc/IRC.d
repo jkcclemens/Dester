@@ -109,11 +109,11 @@ public class IRC {
     }
 
     private void runListeners(EventType et, Captures!(string, ulong) captures) {
-        foreach(listener; listeners.byValue()) if (listener.getEventType() == et) listener.run(captures);
+        foreach (listener; listeners.byValue()) if (listener.getEventType() == et) listener.run(captures);
     }
 
     private void runListeners(LineType lt, Captures!(string, ulong) captures) {
-        foreach(listener; listeners.byValue()) if (listener.getLineType() == lt) listener.run(captures);
+        foreach (listener; listeners.byValue()) if (listener.getLineType() == lt) listener.run(captures);
     }
 
     /**
@@ -137,7 +137,7 @@ public class IRC {
             if (command.isNumeric()) {
                 int code = to!int(command);
                 if (code == LineType.RplMotdEnd || code == LineType.ErrNoMotd) connected = true;
-                foreach(listener; listeners.byValue()) if (listener.getLineType() == code) listener.run(captures);
+                foreach (listener; listeners.byValue()) if (listener.getLineType() == code) listener.run(captures);
                 continue;
             }
             if (command.equal("PRIVMSG")) {
