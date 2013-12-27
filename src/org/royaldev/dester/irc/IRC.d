@@ -37,6 +37,10 @@ public class IRC {
         if (!pass.equal("")) sendRaw("PASS " ~ pass);
     }
 
+    public void shutdown() {
+        s.close();
+    }
+
     /**
      * Returns if the connection is still live.
      */
