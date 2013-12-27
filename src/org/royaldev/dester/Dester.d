@@ -101,6 +101,8 @@ public class Dester {
         irc.setCredentials(nickname, "Dester", nickname);
         auto botThread = new IRCLauncher(irc);
         botThread.start();
+        auto channels = channel;
+        auto nsPass = nickservPassword;
         irc.addListener("welcome", new class Listener {
             override public LineType getLineType() {
                 return LineType.RplWelcome;
@@ -111,8 +113,8 @@ public class Dester {
             override public void run(Captures!(string, ulong) captures) {
                 loadBrain();
                 irc.sendRaw("MODE " ~ irc.getNick() ~ " +B");
-                if (!nickservPassword.equal("")) irc.sendMessage("NickServ", "IDENTIFY " ~ nickservPassword);
-                foreach (channelName; channel.split(" ")) irc.joinChannel(channelName);
+                if (!nsPass.equal("")) irc.sendMessage("NickServ", "IDENTIFY " ~ nsPass);
+                foreach (channelName; channels.split(" ")) irc.joinChannel(channelName);
             }
         });
         irc.addListener("mention", new class Listener {
