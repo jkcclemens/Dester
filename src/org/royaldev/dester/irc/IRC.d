@@ -32,7 +32,7 @@ public class IRC {
             s.connect(new InternetAddress(server, port));
         } catch (SocketException s) {
             writeln("Couldn't connect!");
-            exit(-1);
+            exit(1);
         }
         if (!pass.equal("")) sendRaw("PASS " ~ pass);
     }
