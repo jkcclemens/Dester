@@ -97,7 +97,7 @@ public class Dester {
     private string[] storage;
 
     public this() {
-        irc = new IRC(server);
+        irc = new IRC(server, port, password);
         irc.setCredentials(nickname, "Dester", nickname);
         auto botThread = new IRCLauncher(irc);
         botThread.start();

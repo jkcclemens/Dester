@@ -22,14 +22,10 @@ public class IRC {
 
     private Listener[string] listeners;
 
-    public this(string server) {
-        auto parts = server.split(":");
-        server = parts[0];
-        short port = parts.length > 1 ? to!short(parts[1]) : 6667;
-        string pass = parts.length > 2 ? parts[2..$].join(":") : "";
+    public this(string host, short port, string pass) {
         try {
             s = new Socket(AddressFamily.INET, SocketType.STREAM);
-            s.connect(new InternetAddress(server, port));
+            s.connect(new InternetAddress(host, port));
         } catch (SocketException s) {
             writeln("Couldn't connect!");
             exit(1);
