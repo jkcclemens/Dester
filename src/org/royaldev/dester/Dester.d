@@ -101,9 +101,7 @@ public class Dester {
         irc.setCredentials(nickname, "Dester", nickname);
         auto botThread = new IRCLauncher(irc);
         botThread.start();
-        auto channels = channel;
-        auto nsPass = nickservPassword;
-        auto nick = nickname;
+        auto channels = channel, nsPass = nickservPassword, nick = nickname;
         irc.addListener("welcome", new class Listener {
             override public LineType getLineType() {
                 return LineType.RplWelcome;
