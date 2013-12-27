@@ -103,6 +103,7 @@ public class Dester {
         botThread.start();
         auto channels = channel;
         auto nsPass = nickservPassword;
+        auto nick = nickname;
         irc.addListener("welcome", new class Listener {
             override public LineType getLineType() {
                 return LineType.RplWelcome;
@@ -128,7 +129,7 @@ public class Dester {
                 string message = captures["trail"];
                 string[] margs = message.split(" ")[1..$];
                 string channel = captures["params"];
-                if (message.toLower().canFind(nickname.toLower())) {
+                if (message.toLower().canFind(nick.toLower())) {
                     auto randMessage = scrambleWord();
                     randMessage = truncate(randMessage, 300).rreplace(regex(r"<.*?>"), "").rreplace(regex(r"\\[.*?\\]"), "");
                     irc.sendMessage(channel, randMessage);
