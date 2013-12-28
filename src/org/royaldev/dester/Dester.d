@@ -52,7 +52,7 @@ private void main(string[] args) {
         "h|help", &displayHelp
     );
     if (displayHelp) {
-        writeln("Usage: -s server [-c \"#channel1 #channel2\"] [-p port] [-P password] [-n nickname] [-N nickservPassword] [-h]");
+        writeln("Usage: ", args[0], " -s server [-c \"#channel1 #channel2\"] [-p port] [-P password] [-n nickname] [-N nickservPassword] [-h]");
         writeln("-s | --server\n\tRequired\n\tSets the server that the bot will attempt to connect to.");
         writeln("-c | --channel | --channels\n\tSets the channels that the bot will join on connection.\n\tIf this is not set, the bot will join no channels by default.");
         writeln("-p | --port\n\tSets the port of the server to join.\n\tDefault to 6667.");
