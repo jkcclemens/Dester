@@ -8,7 +8,7 @@ import std.algorithm: equal, startsWith;
 import std.array: replace, join;
 import std.c.stdlib: exit;
 import std.conv: to;
-import std.regex: regex, Regex, match;
+import std.regex: regex, Regex, match, rreplace = replace;
 import std.socket: Socket, SocketException, SocketType, AddressFamily, InternetAddress;
 import std.stdio: writeln;
 import std.string: isNumeric, split;
@@ -93,7 +93,7 @@ public class IRC {
     }
 
     /**
-     * Blockingly reads a line. This will block until it receives "\r\n"
+     * Blockingly reads a line. This will block until it receives "\n"
      */
     public string readLine() {
         string line = "";
@@ -102,7 +102,7 @@ public class IRC {
                 char[1] buff;
                 auto amt = receive(buff);
                 line ~= to!string(buff[0..amt]);
-                if (line.length > 2 && line[$-2..$].equal("\r\n")) return line;
+                if (line.length > 1 && line[$-1..$].equal("\n")) return line; // support bad servers
             }
         }
         return line;
@@ -124,7 +124,7 @@ public class IRC {
         while (isAlive()) {
             string line;
             try {
-                line = toUTF8(readLine().replace("\r\n", ""));
+                line = toUTF8(readLine().rreplace(regex(r"\r?\n"), ""));
             } catch (UTFException ex) {
                 continue;
             }
