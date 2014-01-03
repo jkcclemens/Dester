@@ -183,7 +183,6 @@ public class Dester {
         while ((output = f.readln()) !is null) {
             output = output.replace("\n", "").strip();
             if (output.length < 1) continue;
-            writeln(output);
             storage ~= output;
         }
         f.close();
