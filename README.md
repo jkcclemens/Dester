@@ -11,12 +11,17 @@ Compilation
 
 I prefer using GDC to compile.
 ```
-cat build.rf | sed ':a;N;$!ba;s/\n/ /g' | xargs gdc -frelease -ffunction-sections -fdata-sections -Wl,-s,--gc-sections -Os
+find . -name "*.d" | tr '\n' ' ' | xargs gdc -frelease -ffunction-sections -fdata-sections -Wl,-s,--gc-sections -Os -o Dester
 strip -s bin/Dester
 ```
 If you use DMD, see below.
 ```
-cat build.rf | sed ':a;N;$!ba;s/\n/ /g' | xargs dmd -release -O
+find . -name "*.d" | tr '\n' ' ' | xargs dmd -release -O -of Dester
+strip -s bin/Dester
+```
+If you use LDC, see below.
+```
+find . -name "*.d" | tr '\n' ' ' | xargs ldc2 -release -Oz -of Dester
 strip -s bin/Dester
 ```
 In a bash shell, that will compile Dester.
