@@ -3,7 +3,7 @@ module org.royaldev.dester.irc.listeners.Listener;
 import org.royaldev.dester.irc.EventType;
 import org.royaldev.dester.irc.LineType;
 
-import std.regex: RegexMatch, regex, Captures;
+import std.regex: Captures;
 
 public interface Listener {
     public LineType getLineType();
